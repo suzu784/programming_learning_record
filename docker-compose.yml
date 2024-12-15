@@ -1,0 +1,49 @@
+services:
+  web:
+    container_name: nginx
+    build:
+      dockerfile: "./container/web/Dockerfile"
+    platform: linux/x86_64
+    ports:
+      - 80:80
+    volumes:
+      - ./src/backend:/var/www/html
+      - ./work:/work
+  php:
+    container_name: laravel
+    build:
+      dockerfile: "./container/php/Dockerfile"
+    platform: linux/x86_64
+    ports:
+      - 9000:9000
+      - 5173:5173
+    volumes:
+      - ./src/backend:/var/www/html
+      - ./work:/work
+  mysql:
+    container_name: mysql
+    image: mysql:8.0
+    platform: linux/x86_64
+    user: 1000:1000
+    ports:
+      - 3306:3306
+    environment:
+      - MYSQL_ROOT_PASSWORD=${MYSQL_ROOT_PASSWORD}
+      - MYSQL_DATABASE=${MYSQL_DATABASE}
+      - MYSQL_USER=${MYSQL_USER}
+      - MYSQL_PASSWORD=${MYSQL_PASSWORD}
+      - TZ='Asia/Tokyo'
+    volumes:
+      - ./mysql:/var/lib/mysql
+      - ./work:/work
+    # MySQL8.0ではデフォルトがcaching_sha2_passwordで、ドライバが非対応のため変更
+    command: --default-authentication-plugin=mysql_native_password
+  nextjs:
+      image: node:20-alpine
+      container_name: nextjs
+      working_dir: /app
+      volumes:
+        - ./src/frontend:/app
+      ports:
+        - 3000:3000
+      command: sh -c "npm install && npm run dev"

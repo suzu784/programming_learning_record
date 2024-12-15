@@ -1,0 +1,6 @@
+[submodule "src/backend"]
+	path = src/backend
+	url = https://github.com/suzu784/back_programming_learning_record.git
+[submodule "src/frontend"]
+	path = src/frontend
+	url = https://github.com/suzu784/front_programming_learning_record.git
